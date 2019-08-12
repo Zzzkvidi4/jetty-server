@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'nu.studer.jooq' version '3.0.3'
+}
+
+group 'com.zzzkvidi4'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.eclipse.jetty:jetty-server:9.4.19.v20190610'
+    implementation 'org.eclipse.jetty:jetty-servlet:9.4.19.v20190610'
+    implementation 'org.jooq:jooq:3.11.11'
+    implementation 'org.jooq:jooq-meta:3.11.11'
+    implementation 'org.jooq:jooq-codegen:3.11.11'
+    implementation 'org.postgresql:postgresql:42.2.6'
+    implementation 'org.jetbrains:annotations:17.0.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'org.eclipse.jetty:jetty-servlets:9.4.19.v20190610'
+
+    jooqRuntime 'org.postgresql:postgresql:42.2.6'
+
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+}
+
+jooq {
+    version = '3.11.11'
+    dev(sourceSets.main) {
+        jdbc {
+            driver = 'org.postgresql.Driver'
+            url = 'jdbc:postgresql://localhost:5432/server'
+            user = 'postgres'
+            password = 'postgres'
+            
+        }
+
+        generator {
+            name = 'org.jooq.codegen.DefaultGenerator'
+            strategy {
+                name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+            }
+            database {
+                name = 'org.jooq.meta.postgres.PostgresDatabase'
+                inputSchema = 'public'
+            }
+            generate {
+                relations = true
+                deprecated = false
+                records = true
+                fluentSetters = true
+                daos = true
+            }
+            target {
+                packageName = 'com.zzzkvidi4.dal'
+            }
+        }
+    }
+}
